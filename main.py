@@ -39,7 +39,6 @@ class App:
     def __init__(self, root, images_count):
         self.root = root
         self.root.title("Zarządzanie blogiem")
-        # Creating a Font object of "TkDefaultFont"
         self.defaultFont = font.nametofont("TkDefaultFont")
         self.defaultFont.configure(family="Roboto",
                                    size=14)
@@ -103,8 +102,6 @@ class App:
         title_frame = ttk.Frame(left_frame_metadata)
         title_frame.place(relwidth=1, relheight=0.33, relx=0, rely=0.66)
 
-        ###############################################################
-        # begin of widgets in left_frame_metadata
         # widgets for category_frame
         category_label = ttk.Label(category_frame, text="Kategoria")
         category_label.place(relwidth=0.25, relx=0.05, rely=0)
@@ -120,7 +117,6 @@ class App:
 
         self.category_combobox["values"] = folders
 
-        ###############################################################
         # widgets for keyword_frame
         keyword_label = ttk.Label(keyword_frame, text="Słowo kluczowe")
         keyword_label.place(relwidth=0.25, relx=0.05, rely=0)
@@ -129,7 +125,6 @@ class App:
         self.keyword_entry.place(
             relwidth=0.65, relx=0.3, rely=0)
 
-        ###############################################################
         # widgets for title_frame
         title_label = ttk.Label(title_frame, text="Tytuł")
         title_label.place(relwidth=0.25, relx=0.05, rely=0)
@@ -138,10 +133,7 @@ class App:
         self.title_entry.place(
             relwidth=0.65, relx=0.3, rely=0)
         self.title_entry.bind("<KeyRelease>", self.calculate_width)
-        # end of widgets in left_frame_metadata
-        ###############################################################
 
-        ###############################################################
         # widgets in right_frame_metadata
         self.word_counter_label = ttk.Label(
             right_frame_metadata, text="0 / 60 (0px / 600px)", font=("Roboto", 9), justify="right")
@@ -152,13 +144,10 @@ class App:
             right_frame_metadata, mode="determinate", maximum=60)
         self.progress_bar.place(relwidth=0.95,
                                 relx=0., rely=0.77)
-        # end of widgets in right_frame_metadata
-        ###############################################################
         """end of widgets in labelframe "Metadane" """
 
         """begin of widgets in labelframe "Zdjęcie" """
-        ###############################################################
-        # begin of widgets in left_frame_photos
+
         # splitting left_frame_photos into 2 frames
         top_left_frame_photos = ttk.Frame(left_frame_photos)
         top_left_frame_photos.place(relwidth=1, relheight=0.2, relx=0, rely=0)
@@ -167,7 +156,6 @@ class App:
         bottom_left_frame_photos.place(
             relwidth=1, relheight=0.8, relx=0, rely=0.2)
 
-        ###############################################################
         # widgets in left_frame_photos
         photo_label = ttk.Label(top_left_frame_photos, text="Zdjęcie")
         photo_label.place(relwidth=0.25, relx=0.05, rely=0.1)
@@ -180,12 +168,13 @@ class App:
         thumbnail_frame = ttk.Frame(top_left_frame_photos)
         thumbnail_frame.place(relwidth=0.2, relheight=1, relx=0.55, rely=0.1)
 
-        thumbnail_label = ttk.Label(thumbnail_frame, text="Miniaturka")
-        thumbnail_label.place(relwidth=0.8, relx=0, rely=0)
+        self.thumbnail_label = ttk.Label(
+            thumbnail_frame, text="Miniaturka", bootstyle="secondary")
+        self.thumbnail_label.place(relwidth=0.8, relx=0, rely=0)
 
         self.thumbnail_checkbutton_variable = tk.IntVar()
         self.thumbnail_checkbutton = ttk.Checkbutton(
-            thumbnail_frame, variable=self.thumbnail_checkbutton_variable, command=self.thumbnail_checkbutton_action, bootstyle="primary-round-toggle")
+            thumbnail_frame, variable=self.thumbnail_checkbutton_variable, bootstyle="disabled-round-toggle", command=self.thumbnail_checkbutton_action, state="disabled")
         self.thumbnail_checkbutton.place(
             relwidth=0.2, relx=0.8, rely=0.05)
 
@@ -199,11 +188,7 @@ class App:
 
         self.loaded_photo_label = ttk.Label(bottom_left_frame_photos)
         self.loaded_photo_label.place(relwidth=1, relheight=1, relx=0, rely=0)
-        # end of widgets in left_frame_photos
-        ###############################################################
 
-        ###############################################################
-        # begin of widgets in right_frame_photos
         # splitting right_frame_photos into 2 frames
         top_right_frame_photos = ttk.Frame(right_frame_photos)
         top_right_frame_photos.place(relwidth=1, relheight=0.2, relx=0, rely=0)
@@ -212,14 +197,13 @@ class App:
         bottom_right_frame_photos.place(
             relwidth=1, relheight=0.8, relx=0, rely=0.2)
 
-        ###############################################################
         # widgets in right_frame_photos
         self.label_jpeg = ttk.Label(top_right_frame_photos,
-                                    text="JPEG", font=("Roboto", 9))
+                                    text="JPEG", font=("Roboto", 9), bootstyle="secondary")
         self.label_jpeg.place(relwidth=0.25, relx=0.05, rely=0.1)
 
         self.toggle_jpeg_webp_checkbutton = ttk.Checkbutton(
-            top_right_frame_photos, bootstyle="primary-round-toggle", command=self.toggle_photo_format)
+            top_right_frame_photos, bootstyle="disabled-round-toggle", command=self.toggle_photo_format, state="disabled")
         self.toggle_jpeg_webp_checkbutton.place(
             relwidth=0.2, relx=0.3, rely=0.1)
 
@@ -246,38 +230,50 @@ class App:
     ###############################################################
     # Buttons events
     def load_image(self):
-        self.file_path = filedialog.askopenfilename(
-            filetypes=[("Image Files", "*.png *.jpg *.jpeg *.gif *.bmp")])
-        if self.file_path:
-            image = Image.open(self.file_path)
-            self.copy = image.copy()
-            # Zmniejsz obraz do wymiarów 100x100 (możesz dostosować rozmiar)
-            width = self.loaded_photo_label.winfo_width()
-            height = self.loaded_photo_label.winfo_height()
-            image.thumbnail((width-width*0.05, height-height*0.05))
-            photo = ImageTk.PhotoImage(image)
+        try:
+            self.filename = filedialog.askopenfilename(title="Wybierz zdjęcie", filetypes=(
+                ("Image files", "*.jpg *.jpeg *.png *.gif *.bmp"), ("all files", "*.*")))
+            if not self.filename:
+                raise Exception("Nie wybrano zdjęcia")
+        except Exception as e:
+            print("Błąd load", e)
+        else:
+            self.image = Image.open(self.filename)
 
-            if self.load_photo_specs() != -1:
-                self.loaded_photo_label.config(image=photo, anchor="center")
-                self.loaded_photo_label.image = photo
+            format = self.new_image_format()
+            thumbnail = False
 
-            image.close()
+            try:
+                original_photo = self.get_original_photo(self.image.copy())
+                new_photo = self.get_new_photo(self.image.copy(), format)
+                if self.thumbnail_checkbutton_variable.get() == 1:
+                    thumbnail_photo = self.get_thumbnail_photo(
+                        self.image.copy(), format, new_photo)
+                    thumbnail = True
 
-    ###############################################################
+                if not original_photo or not new_photo:
+                    raise Exception("Nie udało się załadować zdjęcia")
+            except Exception as e:
+                messagebox.showerror("Błąd load", e)
+            else:
+                self.enable_photo_options()
+                display_photo_section = self.get_display_photo_section(self.image.copy(
+                ), original_photo, new_photo, thumbnail_photo if thumbnail else False)
 
     ###############################################################
     # Checkbutton events
-
     def thumbnail_checkbutton_action(self):
         if self.thumbnail_checkbutton_variable.get() == 1:
             state = tk.NORMAL
             style = "primary"
         else:
             state = tk.DISABLED
-            style = "disabled"
+            style = "secondary"
 
         self.thb_width_entry.config(state=state, bootstyle=style)
         self.thb_height_entry.config(state=state, bootstyle=style)
+        self.thumbnail_photo_specs_labelframe.config(bootstyle=style)
+        # self.thumbnail_photo_specs_labelframe.
 
     def toggle_photo_format(self):
         if self.toggle_jpeg_webp_checkbutton.instate(['selected']):
@@ -286,7 +282,14 @@ class App:
         else:
             self.label_webp.config(bootstyle="secondary")
             self.label_jpeg.config(bootstyle="default")
-    ###############################################################
+
+        self.refresh_photo_specs()
+
+    def new_image_format(self):
+        if self.toggle_jpeg_webp_checkbutton.instate(['selected']):
+            return "webp"
+        else:
+            return "jpeg"
 
     ###############################################################
     # Entry events
@@ -326,215 +329,219 @@ class App:
             return "danger"
         else:
             return "danger"
-    ###############################################################
 
     ###############################################################
-    # Other functions
-    def load_photo_specs(self):
+    # Photo functions
+    def get_original_photo(self, image):
+        image_name = os.path.basename(self.filename)
+        image_width, image_height = image.size
+        image_size_bytes = os.path.getsize(self.filename)
+        image_size_bytes = self.bytes_to_str(image_size_bytes)
+
+        return {"image_name": image_name, "image_width": image_width, "image_height": image_height, "image_size_bytes": image_size_bytes}
+
+    def get_new_photo(self, image, format):
         try:
-            self.oryginal_photo_specs_labelframe.config(bootstyle="primary")
-            self.new_photo_specs_labelframe.config(bootstyle="primary")
-            if self.thumbnail_checkbutton_variable.get() == 1:
-                self.thumbnail_photo_specs_labelframe.config(
-                    bootstyle="primary")
-
-            ##########################################
-            # Get oryginal photo specs
-            image_name = os.path.basename(self.file_path)
-            image_width, image_height = self.copy.size
-            image_size_bytes = os.path.getsize(self.file_path)
-            image_size_bytes = self.bytes_to_str(image_size_bytes)
-
-            ##########################################
-            # Get new photo specs
             current_category = self.category_combobox.get()
-            webp = self.toggle_jpeg_webp_checkbutton.instate(['selected'])
+            image_width, image_height = image.size
 
             if not current_category:
                 raise Exception("Nie wybrano kategorii")
-            else:
-                new_image_name = f"{current_category[0]}_{self.images_count[current_category] + 1}.{'webp' if webp else 'jpg'}"
-                thumbnail_image_name = f"{current_category[0]}_{self.images_count[current_category] + 1}_thumbnail.{'webp' if webp else 'jpg'}"
 
+            if format == "jpeg" and image.mode != "RGB":
+                if not messagebox.askokcancel("Zmiana formatu zdjęcia", "Zdjęcie nie jest w formacie RGB. Czy chcesz kontynuować?"):
+                    raise Exception("Operacja przerwana")
+                else:
+                    image = image.convert("RGB")
+
+            new_image_name = f"{str(current_category[0]).upper()}_{self.images_count[current_category] + 1}.{'webp' if format else 'jpg'}"
             if image_width < 1200:
                 new_image_width = image_width
                 new_image_height = image_height
             else:
                 new_image_width = 1200
-                new_image_height = int(image_height * (1200 / image_width))
-
-            if webp:
-                format = "webp"
-            else:
-                format = "jpeg"  # Domyślnie zakładamy, że chcemy zapisać w formacie JPEG
-
-            if self.copy.mode == "RGBA":
-                replay = messagebox.askyesno(
-                    "Uwaga", "Zdjęcie zawiera przezroczystość. Czy chcesz zapisać w formacie JPEG (utrata przezroczystości)?")
-                if not replay:
-                    raise Exception("Operacja przerwana")
-                else:
-                    self.copy = self.copy.convert("RGB")
+                new_image_height = int(image_height * (1200 / image_height))
 
             temp_image = io.BytesIO()
-            self.copy.resize((new_image_width, new_image_height)
-                             ).save(temp_image, format, quality=80)
+            image.resize((new_image_width, new_image_height)
+                         ).save(temp_image, format, quality=80)
             new_image_size_bytes = temp_image.tell()
             new_image_size_bytes = self.bytes_to_str(new_image_size_bytes)
             temp_image.close()
-            ##########################################
-
-            ##########################################
-            # Get thumbnail photo specs
-            thumbnail = self.thumbnail_checkbutton_variable.get()
-            if thumbnail == 1:
-                # crop thumbnail from center to given size
-                thb_width = int(self.thb_width_entry.get())
-                thb_height = int(self.thb_height_entry.get())
-
-                if thb_width > new_image_width or thb_height > new_image_height:
-                    raise Exception(
-                        "Miniatura nie może być większa niż zdjęcie")
-
-                if thb_width == 0 or thb_height == 0:
-                    raise Exception("Nie podano rozmiaru miniatury")
-
-                if thb_width > thb_height:
-                    thb_height = int(thb_width * (thb_height / thb_width))
-                elif thb_width < thb_height:
-                    thb_width = int(thb_height * (thb_width / thb_height))
-
-                thumbnail_image = self.copy.copy()
-
-                # Oblicz nowe wymiary, zachowując proporcje
-                aspect_ratio = thumbnail_image.width / thumbnail_image.height
-                if aspect_ratio > thb_width / thb_height:
-                    new_width = thb_width
-                    new_height = int(thb_width / aspect_ratio)
-                else:
-                    new_width = int(thb_height * aspect_ratio)
-                    new_height = thb_height
-
-                # Zmniejsz obraz zachowując proporcje
-                thumbnail_image = thumbnail_image.resize(
-                    (new_width, new_height))
-
-                # Przyciąć od środka do docelowych rozmiarów (300x150)
-                left = (new_width - thb_width) / 2
-                top = (new_height - thb_height) / 2
-                right = (new_width + thb_width) / 2
-                bottom = (new_height + thb_height) / 2
-                thumbnail_image = thumbnail_image.crop(
-                    (left, top, right, bottom))
-
-                temp_image = io.BytesIO()
-                thumbnail_image.save(temp_image, format, quality=80)
-                thumbnail_image_size_bytes = temp_image.tell()
-                thumbnail_image_size_bytes = self.bytes_to_str(
-                    thumbnail_image_size_bytes)
-                temp_image.close()
-            ##########################################
-
-            ##########################################
-            # Frames for oryginal photo specs
-            frame_oryginal_name = ttk.Frame(
-                self.oryginal_photo_specs_labelframe)
-            frame_oryginal_name.place(
-                relwidth=1, relheight=0.33, relx=0, rely=0)
-
-            frame_oryginal_resolution = ttk.Frame(
-                self.oryginal_photo_specs_labelframe)
-            frame_oryginal_resolution.place(
-                relwidth=1, relheight=0.33, relx=0, rely=0.33)
-
-            frame_oryginal_size = ttk.Frame(
-                self.oryginal_photo_specs_labelframe)
-            frame_oryginal_size.place(
-                relwidth=1, relheight=0.33, relx=0, rely=0.66)
-            ##########################################
-
-            ##########################################
-            # Frames for new photo specs
-            frame_new_name = ttk.Frame(self.new_photo_specs_labelframe)
-            frame_new_name.place(relwidth=1, relheight=0.33, relx=0, rely=0)
-
-            frame_new_resolution = ttk.Frame(self.new_photo_specs_labelframe)
-            frame_new_resolution.place(
-                relwidth=1, relheight=0.33, relx=0, rely=0.33)
-
-            frame_new_size = ttk.Frame(self.new_photo_specs_labelframe)
-            frame_new_size.place(relwidth=1, relheight=0.33, relx=0, rely=0.66)
-            ##########################################
-
-            ##########################################
-            # Frames for thumbnail photo specs
-            frame_thumbnail_name = ttk.Frame(
-                self.thumbnail_photo_specs_labelframe)
-            frame_thumbnail_name.place(
-                relwidth=1, relheight=0.5, relx=0, rely=0)
-
-            frame_thumbnail_size = ttk.Frame(
-                self.thumbnail_photo_specs_labelframe)
-            frame_thumbnail_size.place(
-                relwidth=1, relheight=0.5, relx=0, rely=0.5)
-            ##########################################
-
-            ##########################################
-            # Labels for oryginal photo specs
-            label_oryginal_name = ttk.Label(
-                frame_oryginal_name, font=("Roboto", 8), text=f"Nazwa: {image_name}")
-            label_oryginal_name.place(relwidth=0.9, relx=0.05, rely=0.1)
-            label_oryginal_name.bind(
-                "<Configure>", lambda e: label_oryginal_name.configure(wraplength=e.width))
-            original_tooltip = Tooltip(label_oryginal_name, image_name)
-
-            label_oryginal_resolution = ttk.Label(
-                frame_oryginal_resolution, font=("Roboto", 8), text=f"Wymiary: {image_width} x {image_height}")
-            label_oryginal_resolution.place(relwidth=0.9, relx=0.05, rely=0.1)
-
-            label_oryginal_size = ttk.Label(
-                frame_oryginal_size, font=("Roboto", 8), text=f"Rozmiar: {image_size_bytes}")
-            label_oryginal_size.place(relwidth=0.9, relx=0.05, rely=0.1)
-            ##########################################
-
-            ##########################################
-            # Labels for new photo specs
-            label_new_name = ttk.Label(
-                frame_new_name, font=("Roboto", 8), text=f"Nazwa: {new_image_name}")
-            label_new_name.place(relwidth=0.9, relx=0.05, rely=0.1)
-            label_new_name.bind(
-                "<Configure>", lambda e: label_new_name.configure(wraplength=e.width))
-            new_tooltip = Tooltip(label_new_name, new_image_name)
-
-            label_new_resolution = ttk.Label(
-                frame_new_resolution, font=("Roboto", 8), text=f"Wymiary: {new_image_width} x {new_image_height}")
-            label_new_resolution.place(relwidth=0.9, relx=0.05, rely=0.1)
-
-            label_new_size = ttk.Label(
-                frame_new_size, font=("Roboto", 8), text=f"Rozmiar: {new_image_size_bytes}")
-            label_new_size.place(relwidth=0.9, relx=0.05, rely=0.1)
-            ##########################################
-
-            ##########################################
-            # Labels for thumbnail photo specs
-            if self.thumbnail_checkbutton_variable.get() == 1:
-                label_thumbnail_name = ttk.Label(
-                    frame_thumbnail_name, font=("Roboto", 8), text=f"Nazwa: {thumbnail_image_name}")
-                label_thumbnail_name.place(relwidth=0.9, relx=0.05, rely=0.1)
-                label_thumbnail_name.bind(
-                    "<Configure>", lambda e: label_thumbnail_name.configure(wraplength=e.width))
-                thumbnail_tooltip = Tooltip(
-                    label_thumbnail_name, f"{thumbnail_image_name}")
-
-                label_thumbnail_size = ttk.Label(
-                    frame_thumbnail_size, font=("Roboto", 8), text=f"Rozmiar: {thumbnail_image_size_bytes}")
-                label_thumbnail_size.place(relwidth=0.9, relx=0.05, rely=0.1)
 
         except Exception as e:
-            messagebox.showerror("Błąd", e)
-            return -1
+            messagebox.showerror("Błąd new", e)
+            return False
         else:
-            return 0
+            return {"new_image_name": new_image_name, "new_image_width": new_image_width, "new_image_height": new_image_height, "new_image_size_bytes": new_image_size_bytes}
+
+    def get_thumbnail_photo(self, image, format, new_image):
+        thumbnail_image_name = new_image["new_image_name"].split(
+            ".")[0] + "_thumbnail." + format
+
+        if format == "jpeg" and image.mode != "RGB":
+            image = image.convert("RGB")
+
+        try:
+            new_image_width = new_image["new_image_width"]
+            new_image_height = new_image["new_image_height"]
+            thb_width = int(self.thb_width_entry.get())
+            thb_height = int(self.thb_height_entry.get())
+
+            if thb_width > new_image_width or thb_height > new_image_height:
+                raise Exception(
+                    "Miniatura nie może być większa niż zdjęcie")
+
+            if thb_width == 0 or thb_height == 0:
+                raise Exception("Nie podano rozmiaru miniatury")
+
+            if thb_width > thb_height:
+                thb_height = int(thb_width * (thb_height / thb_width))
+            elif thb_width < thb_height:
+                thb_width = int(thb_height * (thb_width / thb_height))
+
+            aspect_ratio = image.width / image.height
+            if aspect_ratio > thb_width / thb_height:
+                new_width = thb_width
+                new_height = int(thb_width / aspect_ratio)
+            else:
+                new_width = int(thb_height * aspect_ratio)
+                new_height = thb_height
+
+            image = image.resize(
+                (new_width, new_height))
+
+            left = (new_width - thb_width) / 2
+            top = (new_height - thb_height) / 2
+            right = (new_width + thb_width) / 2
+            bottom = (new_height + thb_height) / 2
+            image = image.crop(
+                (left, top, right, bottom))
+
+            temp_image = io.BytesIO()
+            image.save(temp_image, format, quality=80)
+            thumbnail_image_size_bytes = temp_image.tell()
+            thumbnail_image_size_bytes = self.bytes_to_str(
+                thumbnail_image_size_bytes)
+            temp_image.close()
+
+        except Exception as e:
+            messagebox.showerror("Błąd thumbnail", e)
+            return False
+        else:
+            return {"thumbnail_image_name": thumbnail_image_name, "thumbnail_image_width": thb_width, "thumbnail_image_height": thb_height, "thumbnail_image_size_bytes": thumbnail_image_size_bytes}
+
+    def get_display_photo_section(self, image, original_photo, new_photo, thumbnail_photo):
+        width = self.loaded_photo_label.winfo_width()
+        height = self.loaded_photo_label.winfo_height()
+        image.thumbnail((width-width*0.05, height-height*0.05))
+        photo = ImageTk.PhotoImage(image)
+
+        self.loaded_photo_label.config(image=photo, anchor="center")
+        self.loaded_photo_label.image = photo
+
+        self.oryginal_photo_specs_labelframe.config(bootstyle="primary")
+        self.new_photo_specs_labelframe.config(bootstyle="primary")
+
+        ##########################################
+        # Frames for oryginal photo specs
+        frame_oryginal_name = ttk.Frame(
+            self.oryginal_photo_specs_labelframe)
+        frame_oryginal_name.place(
+            relwidth=1, relheight=0.33, relx=0, rely=0)
+
+        frame_oryginal_resolution = ttk.Frame(
+            self.oryginal_photo_specs_labelframe)
+        frame_oryginal_resolution.place(
+            relwidth=1, relheight=0.33, relx=0, rely=0.33)
+
+        frame_oryginal_size = ttk.Frame(
+            self.oryginal_photo_specs_labelframe)
+        frame_oryginal_size.place(
+            relwidth=1, relheight=0.33, relx=0, rely=0.66)
+
+        ##########################################
+        # Frames for new photo specs
+        frame_new_name = ttk.Frame(self.new_photo_specs_labelframe)
+        frame_new_name.place(relwidth=1, relheight=0.33, relx=0, rely=0)
+
+        frame_new_resolution = ttk.Frame(self.new_photo_specs_labelframe)
+        frame_new_resolution.place(
+            relwidth=1, relheight=0.33, relx=0, rely=0.33)
+
+        frame_new_size = ttk.Frame(self.new_photo_specs_labelframe)
+        frame_new_size.place(relwidth=1, relheight=0.33, relx=0, rely=0.66)
+
+        ##########################################
+        # Frames for thumbnail photo specs
+        frame_thumbnail_name = ttk.Frame(
+            self.thumbnail_photo_specs_labelframe)
+        frame_thumbnail_name.place(
+            relwidth=1, relheight=0.5, relx=0, rely=0)
+
+        frame_thumbnail_size = ttk.Frame(
+            self.thumbnail_photo_specs_labelframe)
+        frame_thumbnail_size.place(
+            relwidth=1, relheight=0.5, relx=0, rely=0.5)
+
+        ##########################################
+        # Labels for oryginal photo specs
+        label_oryginal_name = ttk.Label(
+            frame_oryginal_name, font=("Roboto", 8), text=f"Nazwa: {original_photo['image_name']}")
+        label_oryginal_name.place(relwidth=0.9, relx=0.05, rely=0.1)
+        label_oryginal_name.bind(
+            "<Configure>", lambda e: label_oryginal_name.configure(wraplength=e.width))
+        original_tooltip = Tooltip(
+            label_oryginal_name, original_photo['image_name'])
+
+        label_oryginal_resolution = ttk.Label(
+            frame_oryginal_resolution, font=("Roboto", 8), text=f"Wymiary: {original_photo['image_width']} x {original_photo['image_height']}")
+        label_oryginal_resolution.place(relwidth=0.9, relx=0.05, rely=0.1)
+
+        label_oryginal_size = ttk.Label(
+            frame_oryginal_size, font=("Roboto", 8), text=f"Rozmiar: {original_photo['image_size_bytes']}")
+        label_oryginal_size.place(relwidth=0.9, relx=0.05, rely=0.1)
+
+        ##########################################
+        # Labels for new photo specs
+        self.label_new_name = ttk.Label(
+            frame_new_name, font=("Roboto", 8), text=f"Nazwa: {new_photo['new_image_name']}")
+        self.label_new_name.place(relwidth=0.9, relx=0.05, rely=0.1)
+        self.label_new_name.bind(
+            "<Configure>", lambda e: self.label_new_name.configure(wraplength=e.width))
+        new_tooltip = Tooltip(self.label_new_name, new_photo['new_image_name'])
+
+        self.label_new_resolution = ttk.Label(
+            frame_new_resolution, font=("Roboto", 8), text=f"Wymiary: {new_photo['new_image_width']} x {new_photo['new_image_height']}")
+        self.label_new_resolution.place(relwidth=0.9, relx=0.05, rely=0.1)
+
+        self.label_new_size = ttk.Label(
+            frame_new_size, font=("Roboto", 8), text=f"Rozmiar: {new_photo['new_image_size_bytes']}")
+        self.label_new_size.place(relwidth=0.9, relx=0.05, rely=0.1)
+
+        ##########################################
+        # Labels for thumbnail photo specs
+        self.label_thumbnail_name = ttk.Label(
+            frame_thumbnail_name, font=("Roboto", 8))
+        self.label_thumbnail_name.place(relwidth=0.9, relx=0.05, rely=0.1)
+
+        self.label_thumbnail_size = ttk.Label(
+            frame_thumbnail_size, font=("Roboto", 8))
+        self.label_thumbnail_size.place(relwidth=0.9, relx=0.05, rely=0.1)
+
+        if self.thumbnail_checkbutton_variable.get() == 1:
+            self.label_thumbnail_name.config(
+                text=f"Nazwa: {thumbnail_photo['thumbnail_image_name']}")
+            self.label_thumbnail_name.bind(
+                "<Configure>", lambda e: self.abel_thumbnail_name.configure(wraplength=e.width))
+            thumbnail_tooltip = Tooltip(
+                self.label_thumbnail_name, f"{thumbnail_photo['thumbnail_image_name']}")
+
+            self.label_thumbnail_size.config(
+                text=f"Rozmiar: {thumbnail_photo['thumbnail_image_size_bytes']}")
+
+    ###############################################################
+    # Other functions
 
     def bytes_to_str(self, size_bytes):
         if size_bytes >= 1024**3:
@@ -549,6 +556,39 @@ class App:
             size_str = f"{image_size_kb:.2f} KB"
 
         return size_str
+
+    def enable_photo_options(self):
+        self.thumbnail_label.config(bootstyle="default")
+        self.toggle_jpeg_webp_checkbutton.config(state=tk.NORMAL)
+        self.thumbnail_checkbutton.config(state=tk.NORMAL)
+        self.label_jpeg.config(bootstyle="default")
+
+    def refresh_photo_specs(self):
+        try:
+            image = self.image.copy()
+            new_photo = self.get_new_photo(image, self.new_image_format())
+            if self.thumbnail_checkbutton_variable.get() == 1:
+                thumbnail_photo = self.get_thumbnail_photo(
+                    image, self.new_image_format(), new_photo)
+                thumbnail = True
+
+            if not new_photo:
+                raise Exception("Nie udało się załadować zdjęcia")
+        except Exception as e:
+            messagebox.showerror("Błąd refresh", e)
+        else:
+            self.label_new_name.config(
+                text=f"Nazwa: {new_photo['new_image_name']}")
+            self.label_new_resolution.config(
+                text=f"Wymiary: {new_photo['new_image_width']} x {new_photo['new_image_height']}")
+            self.label_new_size.config(
+                text=f"Rozmiar: {new_photo['new_image_size_bytes']}")
+
+            if self.thumbnail_checkbutton_variable.get() == 1:
+                self.label_thumbnail_name.config(
+                    text=f"Nazwa: {thumbnail_photo['thumbnail_image_name']}")
+                self.label_thumbnail_size.config(
+                    text=f"Rozmiar: {thumbnail_photo['thumbnail_image_size_bytes']}")
 
         # def create_tab_categories(self):
         #     tab_categories = ttk.Frame(self.notebook)
