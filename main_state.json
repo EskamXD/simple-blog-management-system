@@ -1,0 +1,48 @@
+{
+    "type": "Category",
+    "name": "data",
+    "parent": "data",
+    "children": [
+        {
+            "type": "Category",
+            "name": "aaa",
+            "parent": "data",
+            "children": [
+                {
+                    "type": "Article",
+                    "title": "c",
+                    "content": "c",
+                    "image_path": "",
+                    "status": "ready to publish",
+                    "meta_description": "c",
+                    "parent": "aaa"
+                },
+                {
+                    "type": "Article",
+                    "title": "d",
+                    "content": "d",
+                    "image_path": "",
+                    "status": "draft",
+                    "meta_description": "d",
+                    "parent": "aaa"
+                }
+            ]
+        },
+        {
+            "type": "Category",
+            "name": "aa",
+            "parent": "data",
+            "children": [
+                {
+                    "type": "Article",
+                    "title": "b",
+                    "content": "b",
+                    "image_path": "",
+                    "status": "draft",
+                    "meta_description": "b",
+                    "parent": "aa"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "type": "Category",
+    "name": "root",
+    "parent": null,
+    "children": 
+    [
+        {
+            "type": "Category",
+            "name": "aaa",
+            "parent": "root",
+            "children": 
+            [
+                {
+                    "type": "Article",
+                    "title": "c",
+                    "content": "c",
+                    "image_path": "",
+                    "status": "draft",
+                    "meta_description": "c"
+                }
+            ]
+        },
+
+        {
+            "type": "Category",
+            "name": "aa",
+            "parent": "root",
+            "children": 
+            [
+                {
+                    "type": "Article",
+                    "title": "b",
+                    "content": "b",
+                    "image_path": "",
+                    "status": "draft",
+                    "meta_description": "b"
+                }
+            ]
+        }
+    ] 
+}

@@ -1,0 +1,16 @@
+{
+    "type": "Category",
+    "name": "aa",
+    "parent": "data",
+    "children": [
+        {
+            "type": "Article",
+            "title": "b",
+            "content": "b",
+            "image_path": "",
+            "status": "draft",
+            "meta_description": "b",
+            "parent": "aa"
+        }
+    ]
+}
