@@ -41,6 +41,15 @@
                     "status": "draft",
                     "meta_description": "b",
                     "parent": "aa"
+                },
+                {
+                    "type": "Article",
+                    "title": "f",
+                    "content": "",
+                    "image_path": "",
+                    "status": "published",
+                    "meta_description": "f",
+                    "parent": "aa"
                 }
             ]
         }
