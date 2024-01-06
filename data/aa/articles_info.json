@@ -10,6 +10,7 @@
             "image_path": "",
             "status": "draft",
             "meta_description": "b",
+            "creation_date": "2024-01-04",
             "parent": "aa"
         },
         {
@@ -19,6 +20,7 @@
             "image_path": "",
             "status": "published",
             "meta_description": "f",
+            "creation_date": "2024-01-01",
             "parent": "aa"
         }
     ]

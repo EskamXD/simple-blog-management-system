@@ -19,6 +19,7 @@ class Article(Component):
         image_path: str,
         status: "ArticleStatusContext",
         meta_description: str,
+        creation_date: str,
         parent: Component = None,
     ):
         self.title = title
@@ -26,6 +27,7 @@ class Article(Component):
         self.image_path = image_path
         self.status = status
         self.meta_description = meta_description
+        self.creation_date = creation_date
         self.parent = parent
 
         self.db = Database(ARTICLES_PATH)
@@ -41,6 +43,7 @@ class Article(Component):
         doc.add_paragraph(f"Category: {category_component.name}")
         doc.add_paragraph(f"Status: {self.status}")
         doc.add_paragraph(f"Meta Description: {self.meta_description}")
+        doc.add_paragraph(f"Creation Date: {self.creation_date}")
         doc.add_paragraph("\nContent:")
         doc.add_paragraph(self.content)
         doc.save(article_docx_path)
@@ -53,6 +56,7 @@ class Article(Component):
             "image_path": self.image_path,
             "status": self.status,
             "meta_description": self.meta_description,
+            "creation_date": self.creation_date,
             "parent": self.parent,
         }
 
@@ -64,5 +68,6 @@ class Article(Component):
             image_path=data["image_path"],
             status=data["status"],
             meta_description=data["meta_description"],
+            creation_date=data["creation_date"],
             parent=data["parent"],
         )

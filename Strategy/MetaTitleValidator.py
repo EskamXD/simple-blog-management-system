@@ -12,7 +12,7 @@ class MetaTitleValidator(ValidationStrategy):
 
         font = ImageFont.truetype("Arial.ttf", 20)
         image = ImageDraw.Draw(Image.new("RGB", (1, 1)))
-        title_length_in_pixels = image.textsize(meta_title, font)
+        title_length_in_pixels = image.textlength(meta_title, font)
 
         if title_length_in_pixels <= 580:
             if title_length <= 60:

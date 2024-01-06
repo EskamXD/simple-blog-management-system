@@ -25,3 +25,13 @@ class ArticleStatusChanger(ValidationStrategy):
             article_status_context.set_state(DraftState())
 
         return article_status_context.get_status()
+    
+    @staticmethod
+    def get_status_dict():
+        return {
+            "D": "Draft",
+            "DRAFT": "Draft",
+            "R": "Ready to publish",
+            "READY TO PUBLISH": "Ready to publish",
+            "P": "Published",
+            "PUBLISHED": "Published",}
