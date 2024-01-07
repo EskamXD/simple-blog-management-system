@@ -1,5 +1,7 @@
 import tkinter as tk
 import ttkbootstrap as ttk
+from PIL import Image, ImageTk 
+from tkinter import filedialog
 from ttkbootstrap.constants import *
 
 from MVC.Views.View import View
@@ -120,8 +122,8 @@ class AddArticleView(View):
         )
 
         # Image frame
-        self.image_frame = ttk.Frame(self.canvas, bootstyle="primary")
-        self.temp_text = ttk.Label(self.image_frame, bootstyle="info", justify="center", text="Image preview")
+        # self.image_frame = ttk.Frame(self.canvas, bootstyle="primary")
+        self.image_label = ttk.Label(self.canvas, bootstyle="info", justify="center", text="Image preview")
 
         # Save button
         self.save_button = ttk.Button(self.canvas, bootstyle="outline-success", text="Save")
@@ -166,9 +168,10 @@ class AddArticleView(View):
         self.selected_status.set("Draft")
 
         self.image_button.place(x=30.0, y=350.0, width=150.0, height=40.0)
-        self.image_button.bind("<Button-1>", lambda *args: self.validate_image_size(ImageSizeValidator()))
+        self.image_button.bind("<Button-1>", lambda *args: self.choose_photo())
         self.thumbnail_toggle.place(x=30.0, y=410.0, width=150.0, height=20.0)
-        self.image_frame.place(x=370.0, y=350.0, width=300.0, height=200.0)
+        self.image_label.place(x=370.0, y=350.0, width=300.0, height=210.0)
+        # self.temp_text.place(x=70.0, y=95.0, width=160.0, height=20.0)
 
         self.save_button.place(x=30.0, y=460.0, width=150.0, height=40.0)
         self.cancel_button.place(x=30.0, y=520.0, width=150.0, height=40.0)
@@ -191,16 +194,45 @@ class AddArticleView(View):
             # widget.configure(bootstyle="primary")
             widget.configure(highlightcolor="#007bff")
 
-    def validate_image_size(self, validator: ValidationStrategy) -> None:
+    def validate_image_size(self, image_path) -> None:
         # Validate the image size using the ImageSizeValidator
-        is_valid = validator.validate()
+        validator = ImageSizeValidator()
+        is_valid = validator.validate(image_path)
         # print(is_valid, sep=": ")
+
 
         # Change the style of the entry based on validation result
         if is_valid == 1:
-            self,
+            try:
+                image = Image.open(image_path)
+                copy = image.copy
+                image.close()
+                # image = image.resize((300, 210), Image.ANTIALIAS)
+                thumbnail = copy.thumbnail((300, 210), Image.ANTIALIAS)
+                photo = ImageTk.PhotoImage(thumbnail)
+
+                # Update the label with the new image
+                self.image_label.configure(image=photo)
+                self.image_label.image = photo  # Keep a reference to avoid garbage collection
+
+            except Exception as e:
+                print("Error loading image:", e)
         elif is_valid == -1:
-            self.image_button.configure(bootstyle="danger")
+            self.image_label.configure(bootstyle="danger", text="Image is too large")
         else:
-            self.image_button.configure(bootstyle="outline-primary")
+            self.image_label.configure(bootstyle="outline-primary")
+
+    def choose_photo(self) -> None:
+        # Open file dialog
+        # filepath = tk.filedialog.askopenfilename(
+        #     initialdir="C:/",
+        #     title="Select a file",
+        #     filetypes=(("JPEG files", "*.jpg, *.jpeg"), ("PNG files", "*.png"), ("all files", "*.*")),
+        # )
+        filepath = filedialog.askopenfile(mode="r", title="Select an image", filetypes=[("JPEG files", ("*.jpg", "*.jpeg")), ("PNG files", "*.png"), ("all files", "*.*")])
+
+        # Get the path to the selected image
+        if filepath:
+            self.validate_image_size(filepath.name)
+        
 

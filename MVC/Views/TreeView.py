@@ -34,7 +34,7 @@ class TreeView(View):
         self.treeview = ttk.Treeview(self.canvas, bootstyle="primary")
 
         # Scrollbar
-        self.scrollbar = ttk.Scrollbar(self.canvas, orient="vertical")
+        # self.scrollbar = ttk.Scrollbar(self.canvas, orient="vertical")
 
 
     def place(self):
@@ -43,7 +43,7 @@ class TreeView(View):
         self.treeview.place(x=0.0, y=120.0, width=700.0, height=450.0)
         self.treeview = self.insert_treeview(self.treeview)
 
-        self.scrollbar.place(x=680.0, y=120.0, height=450.0)
+        # self.scrollbar.place(x=680.0, y=120.0, height=450.0)
         # self.scrollbar.configure(command=self.treeview.yview)
         # self.treeview.configure(yscrollcommand=self.scrollbar.set)
 

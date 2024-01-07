@@ -8,7 +8,7 @@ import os
 class ImageSizeValidator(ValidationStrategy):
     def validate(self, image_path):
         if image_path == "":
-            return True
+            return 0
         # if image size is up to 1200x630px
         image = Image.open(image_path)
         width, height = image.size
@@ -28,6 +28,6 @@ class ImageSizeValidator(ValidationStrategy):
 
         if width <= 1200 and height <= 630:
             if weight <= 2 * 1024 * 1024:
-                return True
+                return 1
 
-        return False
+        return -1

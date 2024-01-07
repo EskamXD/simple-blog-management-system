@@ -16,3 +16,8 @@ Strategy/__pycache__/ArticleStatusChanger.cpython-310.pyc
 Strategy/__pycache__/ImageSizeValidator.cpython-310.pyc
 Strategy/__pycache__/MetaDescriptionValidator.cpython-310.pyc
 *.pyc
+*.pyc
+*.pyc
+*.pyc
+Strategy/__pycache__/ArticleStatusChanger.cpython-311.pyc
+Strategy/__pycache__/ImageSizeValidator.cpython-311.pyc
