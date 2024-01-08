@@ -8,13 +8,16 @@ from Strategy.MetaTitleValidator import MetaTitleValidator
 from Strategy.MetaDescriptionValidator import MetaDescriptionValidator
 from Strategy.ArticleStatusChanger import ArticleStatusChanger
 
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
+
 ARTICLES_PATH = str("data")
 META_OK = ("meta_ok", "#28a745")
 META_LONG = ("meta_long", "#dc3545")
 META_DEFAULT = ("meta_default", "#007bff")
 
 
-class AddArticleView(View):
+class AddArticleView(View, Observer):
     def __init__(self, root, tab, controller) -> None:
         super().__init__(root, tab)
         self.controller = controller
@@ -251,3 +254,12 @@ class AddArticleView(View):
         self.thumbnail_toggle.state(
             ["selected"]
         ) if thumbnail else self.thumbnail_toggle.state(["!selected"])
+
+    def update(self, subject: Subject) -> None:
+        self.category_menubutton.menu.delete(0, tk.END)
+        for child in self.root.children:
+            self.category_menubutton.menu.add_radiobutton(
+                label=child.name,
+                value=child.name,
+                command=lambda name=child.name: self.selected_category.set(name),
+            )

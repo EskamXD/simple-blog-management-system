@@ -8,7 +8,10 @@ from Composite.Category import Category
 
 from MVC.Views.View import View
 
-class TreeView(View):
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
+
+class TreeView(View, Observer):
     def __init__(self, root, tab, controller) -> None:
         super().__init__(root, tab)
         self.controller = controller
@@ -93,4 +96,8 @@ class TreeView(View):
         self.canvas.place(x=0, y=0)
 
         self.treeview.place(x=370.0, y=120.0, width=300.0, height=490.0)
+        self.treeview = self.controller.insert_treeview(self.treeview)
+
+    def update(self, subject: Subject) -> None:
+        self.treeview.delete(*self.treeview.get_children())
         self.treeview = self.controller.insert_treeview(self.treeview)

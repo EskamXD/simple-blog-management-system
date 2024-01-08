@@ -10,15 +10,32 @@ from Composite.Category import Category
 from MVC.Controllers.Controller import Controller
 from MVC.Views.PhotoGalleryView import PhotoGalleryView
 
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
+
 ARTICLES_PATH = str("data")
 IDEAL_RATIO = 1.0
 IDEAL_WIDTH = 210
 IDEAL_HEIGHT = 210
 
-class PhotoGalleryController(Controller):
+class PhotoGalleryController(Controller, Subject):
     def __init__(self, root: str, view: "PhotoGalleryView" = None):
         super().__init__(root, view)
-        self.photo_paths = self.get_photo_paths()
+        self.photo_paths = [] 
+        self.get_photo_paths()
+        self._observers = []
+
+    def add_observer(self, observer: Observer) -> None:
+        print("PhotoGalleryController: Attached an observer.")
+        self._observers.append(observer)
+
+    def remove_observer(self, observer: Observer) -> None:
+        self._observers.remove(observer)
+
+    def notify_observers(self) -> None:
+        print("PhotoGalleryController: Notifying observers...")
+        for observer in self._observers:
+            observer.update(self)
 
     def set_view(self, view):
         self.view = view
@@ -82,7 +99,7 @@ class PhotoGalleryController(Controller):
                     photo_list.extend([os.path.join(category_path, file) for file in photo_files])
                     print(photo_list)
                     
-        return photo_list
+        self.photo_paths = photo_list
     
     def open_original_window(self, photo_path):
         full_path = os.getcwd() + "\\" + photo_path

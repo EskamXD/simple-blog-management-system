@@ -4,9 +4,12 @@ from ttkbootstrap.scrolled import ScrolledFrame
 
 from MVC.Views.View import View
 
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
+
 ARTICLES_PATH = str("data")
 
-class PhotoGalleryView(View):
+class PhotoGalleryView(View, Observer):
     def __init__(self, root, tab, controller):
         super().__init__(root, tab)
         self.controller = controller
@@ -38,3 +41,8 @@ class PhotoGalleryView(View):
     def place(self):
         self.canvas.place(x=0, y=0)
         self.frame.place(x=0, y=120.0, width=695.0, height=490.0)
+
+    def update(self, subject: Subject) -> None:
+        self.frame.children.clear()
+        self.controller.get_photo_paths()
+        self.controller.load_images()

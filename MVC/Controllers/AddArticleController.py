@@ -15,12 +15,15 @@ from Strategy.ValidationStrategy import ValidationStrategy
 from Strategy.ImageSizeValidator import ImageSizeValidator
 from Strategy.ArticleStatusChanger import ArticleStatusChanger
 
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
+
 ARTICLES_PATH = str("data")
 META_OK = ("meta_ok", "#28a745")
 META_LONG = ("meta_long", "#dc3545")
 META_DEFAULT = ("meta_default", "#007bff")
 
-class AddArticleController(Controller):
+class AddArticleController(Controller, Subject):
     def __init__(self, root: str, view: "AddArticleView" = None):
         super().__init__(root, view)
 
@@ -33,6 +36,19 @@ class AddArticleController(Controller):
             "thumbnail": False,
         }
         self.temp_image = None
+        self._observers = []
+
+    def add_observer(self, observer: Observer) -> None:
+        print("AddArticleController: Attached an observer.")
+        self._observers.append(observer)
+
+    def remove_observer(self, observer: Observer) -> None:
+        self._observers.remove(observer)
+
+    def notify_observers(self) -> None:
+        print("AddArticleController: Notifying observers...")
+        for observer in self._observers:
+            observer.update(self)
 
     def set_view(self, view: "AddArticleView"):
         self.view = view
@@ -196,6 +212,7 @@ class AddArticleController(Controller):
             "Information", "Article saved successfully", icon="info"
         )
         self.cancel()
+        self.notify_observers()
 
     def cancel(self):
         self.view.set_category("")

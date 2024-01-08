@@ -10,7 +10,10 @@ from MVC.Views.View import View
 
 from Strategy.ArticleStatusChanger import ArticleStatusChanger
 
-class UpdateStatusView(View):
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
+
+class UpdateStatusView(View, Observer):
     def __init__(self, root, tab, controller) -> None:
         super().__init__(root, tab)
         self.controller = controller
@@ -130,3 +133,17 @@ class UpdateStatusView(View):
 
         self.cancel_button.place(x=30.0, y=520.0, width=150.0, height=40.0)
         self.cancel_button.bind("<Button-1>", lambda *args: self.controller.cancel())
+
+    def update(self, subject: Subject) -> None:
+        self.category_menubutton.menu.delete(0, tk.END)
+        self.article_menubutton.menu.delete(0, tk.END)
+        self.status_menubutton.menu.delete(0, tk.END)
+        for child in self.root.children:
+            self.category_menubutton.menu.add_radiobutton(
+                label=child.name,
+                value=child.name,
+                command=lambda name=child.name: (
+                    self.selected_category.set(name),
+                    self.controller.update_article_list(name),
+                ),
+            )

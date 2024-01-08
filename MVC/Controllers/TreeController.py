@@ -10,15 +10,27 @@ from Composite.Category import Category
 from MVC.Controllers.Controller import Controller
 from MVC.Views.TreeView import TreeView
 
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
 
 ARTICLES_PATH = str("data")
-# META_OK = ("meta_ok", "#28a745")
-# META_LONG = ("meta_long", "#dc3545")
-# META_DEFAULT = ("meta_default", "#007bff")
 
-class TreeController(Controller):
+class TreeController(Controller, Subject):
     def __init__(self, root: str, view: "TreeView" = None):
         super().__init__(root, view)
+        self._observers = []
+
+    def add_observer(self, observer: Observer) -> None:
+        print("TreeController: Attached an observer.")
+        self._observers.append(observer)
+
+    def remove_observer(self, observer: Observer) -> None:
+        self._observers.remove(observer)
+
+    def notify_observers(self) -> None:
+        print("TreeController: Notifying observers...")
+        for observer in self._observers:
+            observer.update(self)
 
     def set_view(self, view):
         self.view = view
@@ -91,6 +103,9 @@ class TreeController(Controller):
             os.mkdir("images")
         except FileExistsError:
             pass
+
+        self.cancel()
+        self.notify_observers()
 
     def cancel(self):
         self.view.category_create.delete(0, tk.END)

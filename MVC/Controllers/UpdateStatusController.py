@@ -12,12 +12,27 @@ from MVC.Views.UpdateStatusView import UpdateStatusView
 
 from Strategy.ArticleStatusChanger import ArticleStatusChanger
 
+from UpdateObserver.Observer import Observer
+from UpdateObserver.Subject import Subject
 
 ARTICLES_PATH = str("data")
 
-class UpdateStatusController(Controller):
+class UpdateStatusController(Controller, Subject):
     def __init__(self, root: str, view: "UpdateStatusView" = None):
         super().__init__(root, view)
+        self._observers = []
+
+    def add_observer(self, observer: Observer) -> None:
+        print("UpdateStatusControllerController: Attached an observer.")
+        self._observers.append(observer)
+
+    def remove_observer(self, observer: Observer) -> None:
+        self._observers.remove(observer)
+
+    def notify_observers(self) -> None:
+        print("UpdateStatusControllerController: Notifying observers...")
+        for observer in self._observers:
+            observer.update(self)
 
     def set_view(self, view):
         self.view = view
@@ -77,6 +92,8 @@ class UpdateStatusController(Controller):
         # Change the status
         article.status = status
         self.root.save_composite_recursive("main_state.json")
+        self.cancel()
+        self.notify_observers()
 
     def cancel(self):
         self.view.selected_category.set("")

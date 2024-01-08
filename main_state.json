@@ -103,6 +103,59 @@
                     "parent": "chuj"
                 }
             ]
+        },
+        {
+            "type": "Category",
+            "name": "tescik",
+            "parent": "data",
+            "children": []
+        },
+        {
+            "type": "Category",
+            "name": "test",
+            "parent": "data",
+            "children": [
+                {
+                    "type": "Article",
+                    "title": "test",
+                    "content": "",
+                    "image_path": "data/test/images/test.webp",
+                    "status": "draft",
+                    "meta_description": "test",
+                    "creation_date": "2024-01-08",
+                    "parent": "test"
+                },
+                {
+                    "type": "Article",
+                    "title": "test2",
+                    "content": "",
+                    "image_path": "data/test/images/test2.webp",
+                    "status": "draft",
+                    "meta_description": "test",
+                    "creation_date": "2024-01-08",
+                    "parent": "test"
+                },
+                {
+                    "type": "Article",
+                    "title": "test3",
+                    "content": "",
+                    "image_path": "data/test/images/test3.webp",
+                    "status": "draft",
+                    "meta_description": "test3",
+                    "creation_date": "2024-01-08",
+                    "parent": "test"
+                },
+                {
+                    "type": "Article",
+                    "title": "test4",
+                    "content": "",
+                    "image_path": "data/test/images/test4.webp",
+                    "status": "draft",
+                    "meta_description": "test4",
+                    "creation_date": "2024-01-08",
+                    "parent": "test"
+                }
+            ]
         }
     ]
 }
