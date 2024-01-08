@@ -22,7 +22,6 @@ class PhotoGalleryController(Controller, Subject):
     def __init__(self, root: str, view: "PhotoGalleryView" = None):
         super().__init__(root, view)
         self.photo_paths = [] 
-        self.get_photo_paths()
         self._observers = []
 
     def add_observer(self, observer: Observer) -> None:
@@ -44,10 +43,11 @@ class PhotoGalleryController(Controller, Subject):
         self.view.place()
 
     def load_images(self):
+        photo_paths = self.get_photo_paths()
         column_count = 3
-        row_count = (len(self.photo_paths) + column_count - 1) // column_count
+        row_count = (len(photo_paths) + column_count - 1) // column_count
 
-        for i, photo_path in enumerate(self.photo_paths):
+        for i, photo_path in enumerate(photo_paths):
             img = Image.open(photo_path)
             split_path = photo_path.split("\\")
             image_name = split_path[-1]
@@ -100,6 +100,7 @@ class PhotoGalleryController(Controller, Subject):
                     print(photo_list)
                     
         self.photo_paths = photo_list
+        return photo_list
     
     def open_original_window(self, photo_path):
         full_path = os.getcwd() + "\\" + photo_path

@@ -1,4 +1,4 @@
-from BlogManagement.GUI import GUI
+from BlogManagement.GUI_old import GUI
 from BlogManagement.Terminal import Terminal
 from Composite.Category import Category
 from Database.Database import Database

@@ -108,7 +108,18 @@
             "type": "Category",
             "name": "tescik",
             "parent": "data",
-            "children": []
+            "children": [
+                {
+                    "type": "Article",
+                    "title": "nie wiem",
+                    "content": "",
+                    "image_path": "data/tescik/images/nie wiem.webp",
+                    "status": "Published",
+                    "meta_description": "adasdasdasdasd",
+                    "creation_date": "2024-01-08",
+                    "parent": "tescik"
+                }
+            ]
         },
         {
             "type": "Category",
@@ -140,7 +151,7 @@
                     "title": "test3",
                     "content": "",
                     "image_path": "data/test/images/test3.webp",
-                    "status": "draft",
+                    "status": "Ready to publish",
                     "meta_description": "test3",
                     "creation_date": "2024-01-08",
                     "parent": "test"
@@ -150,7 +161,7 @@
                     "title": "test4",
                     "content": "",
                     "image_path": "data/test/images/test4.webp",
-                    "status": "draft",
+                    "status": "Published",
                     "meta_description": "test4",
                     "creation_date": "2024-01-08",
                     "parent": "test"

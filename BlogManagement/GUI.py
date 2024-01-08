@@ -23,6 +23,13 @@ from ttkbootstrap.constants import *
 ARTICLES_PATH = str("data")
 
 
+class FunctionConfig:
+    def __init__(self, controller_cls, view_cls, tab=None):
+        self.controller_cls = controller_cls
+        self.view_cls = view_cls
+        self.tab = tab
+
+
 class GUI(BlogManagement):
     def __init__(self, db: "Database", root: "Category") -> None:
         self.db = db
@@ -35,40 +42,14 @@ class GUI(BlogManagement):
 
         self.selected_category = tk.StringVar()
 
-        # Menu Notebook
-        menu = ttk.Notebook(self.window, bootstyle="dark")
-        menu.pack(fill=BOTH, expand=True)
-
-
-        # All app tabs
-        add_article_tab = ttk.Frame(menu, bootstyle="default")
-        menu.add(add_article_tab, text="Add article")
-        self.add_article_tab = add_article_tab
-
-        tree_tab = ttk.Frame(menu, bootstyle="default")
-        menu.add(tree_tab, text="Add new category")
-        self.tree_tab = tree_tab
-
-        update_status_tab = ttk.Frame(menu, bootstyle="default")
-        menu.add(update_status_tab, text="Update status")
-        self.update_status_tab = update_status_tab
-
-        photo_gallery_tab = ttk.Frame(menu, bootstyle="default")
-        menu.add(photo_gallery_tab, text="Photo gallery")
-        self.photo_gallery_tab = photo_gallery_tab
-
-
-        self.add_article_controller = AddArticleController(self.root)
-        self.add_article_view = AddArticleView(self.root, self.add_article_tab, self.add_article_controller)
-
-        self.photo_gallery_controller = PhotoGalleryController(self.root)
-        self.photo_gallery_view = PhotoGalleryView(self.root, self.photo_gallery_tab, self.photo_gallery_controller)
-
-        self.tree_controller = TreeController(self.root)
-        self.tree_view = TreeView(self.root, self.tree_tab, self.tree_controller)
-
-        self.update_status_controller = UpdateStatusController(self.root)
-        self.update_status_view = UpdateStatusView(self.root, self.update_status_tab, self.update_status_controller)
+        self.function_configs = {
+            "Add Article": FunctionConfig(AddArticleController, AddArticleView),
+            "Show Categories": FunctionConfig(TreeController, TreeView),
+            "Show Photo Gallery": FunctionConfig(
+                PhotoGalleryController, PhotoGalleryView
+            ),
+            "Update Status": FunctionConfig(UpdateStatusController, UpdateStatusView),
+        }
 
         # Load state from JSON
         try:
@@ -77,34 +58,30 @@ class GUI(BlogManagement):
             pass
 
     def run(self) -> None:
-        self.add_article()
-        self.show_categories()
-        self.show_photo_gallery()
-        self.update_status()
+        self.add_function("Add Article")
+        self.add_function("Show Categories")
+        self.add_function("Show Photo Gallery")
+        self.add_function("Update Status")
 
         self.window.mainloop()
 
-    def add_article(self) -> None:
-        self.add_article_controller.set_view(self.add_article_view)
-        self.add_article_controller.place()
+    def add_function(self, function_name: str) -> None:
+        config = self.function_configs.get(function_name)
+        if config:
+            controller = config.controller_cls(self.root)
+            view = config.view_cls(self.root, config.tab, controller)
+            controller.set_view(view)
+            controller.place()
 
-        self.add_article_controller.add_observer(self.tree_view)
-        self.add_article_controller.add_observer(self.photo_gallery_view)
-        self.add_article_controller.add_observer(self.update_status_view)
+            # Add observers
+            for other_function_name, other_config in self.function_configs.items():
+                if other_function_name != function_name:
+                    other_controller = other_config.controller_cls(self.root)
+                    other_view = other_config.view_cls(
+                        self.root, other_config.tab, other_controller
+                    )
+                    other_controller.set_view(other_view)
+                    controller.add_observer(other_view)
 
-    def show_categories(self) -> None:
-        self.tree_controller.set_view(self.tree_view)
-        self.tree_controller.place()
-
-        self.tree_controller.add_observer(self.add_article_view)
-
-    def show_photo_gallery(self) -> None:
-        self.photo_gallery_controller.set_view(self.photo_gallery_view)
-        self.photo_gallery_controller.load_images()
-        self.photo_gallery_view.place()
-
-    def update_status(self) -> None:
-        self.update_status_controller.set_view(self.update_status_view)
-        self.update_status_controller.place()
-        
-        self.update_status_controller.add_observer(self.update_status_view)
+            # Add to main window
+            view.place()
