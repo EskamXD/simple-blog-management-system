@@ -1,20 +1,24 @@
 import tkinter as tk
 import ttkbootstrap as ttk
-from PIL import Image, ImageTk 
-from tkinter import filedialog
 from ttkbootstrap.constants import *
 
 from MVC.Views.View import View
 
-from Strategy.ValidationStrategy import ValidationStrategy
 from Strategy.MetaTitleValidator import MetaTitleValidator
 from Strategy.MetaDescriptionValidator import MetaDescriptionValidator
-from Strategy.ImageSizeValidator import ImageSizeValidator
 from Strategy.ArticleStatusChanger import ArticleStatusChanger
 
+ARTICLES_PATH = str("data")
+META_OK = ("meta_ok", "#28a745")
+META_LONG = ("meta_long", "#dc3545")
+META_DEFAULT = ("meta_default", "#007bff")
+
+
 class AddArticleView(View):
-    def __init__(self, root, tab) -> None:
+    def __init__(self, root, tab, controller) -> None:
         super().__init__(root, tab)
+        self.controller = controller
+
         self.selected_category = tk.StringVar()
         self.selected_status = tk.StringVar()
 
@@ -43,7 +47,9 @@ class AddArticleView(View):
         self.frame = ttk.Frame(self.canvas)
 
         # Category label
-        self.category_label = ttk.Label(self.canvas, bootstyle="primary", text="Article category")
+        self.category_label = ttk.Label(
+            self.canvas, bootstyle="primary", text="Article category"
+        )
 
         # Category combobox
         self.category_menubutton = ttk.Menubutton(
@@ -54,7 +60,6 @@ class AddArticleView(View):
         )
         self.category_menubutton.menu = tk.Menu(self.category_menubutton, tearoff=0)
 
-
         # Meta title label
         self.meta_title_label = ttk.Label(
             self.canvas, bootstyle="primary", text="Article meta title"
@@ -63,7 +68,9 @@ class AddArticleView(View):
         # Meta title entry
         # self.meta_title_variable = ttk.StringVar()
         # self.meta_title_entry = ttk.Entry(self.canvas, bootstyle="primary", textvariable=self.meta_title_variable , width=50)
-        self.meta_title_entry = ttk.Text(self.canvas, relief="solid", width=50, wrap="word")
+        self.meta_title_entry = ttk.Text(
+            self.canvas, relief="solid", width=50, wrap="word"
+        )
 
         # Meta description labelframe
         self.meta_description_label = ttk.Label(
@@ -79,7 +86,9 @@ class AddArticleView(View):
         )
 
         # Status label
-        self.status_label = ttk.Label(self.canvas, bootstyle="primary", text="Article status")
+        self.status_label = ttk.Label(
+            self.canvas, bootstyle="primary", text="Article status"
+        )
 
         # Status combobox
         self.status_menubutton = ttk.Menubutton(
@@ -89,7 +98,6 @@ class AddArticleView(View):
             textvariable=self.selected_status,  # Link the variable to the Menubutton
         )
         self.status_menubutton.menu = tk.Menu(self.status_menubutton, tearoff=0)
-
 
         # Line
         self.canvas.create_line(
@@ -123,17 +131,27 @@ class AddArticleView(View):
 
         # Image frame
         # self.image_frame = ttk.Frame(self.canvas, bootstyle="primary")
-        self.image_label = ttk.Label(self.canvas, bootstyle="info", justify="center", text="Image preview")
+        self.image_label = ttk.Label(
+            self.canvas,
+            anchor="center",
+            bootstyle="inverse-secondary",
+            justify="center",
+            text="Image preview",
+        )
 
         # Save button
-        self.save_button = ttk.Button(self.canvas, bootstyle="outline-success", text="Save")
+        self.save_button = ttk.Button(
+            self.canvas, bootstyle="outline-success", text="Save"
+        )
 
         # Cancel button
-        self.cancel_button = ttk.Button(self.canvas, bootstyle="outline-danger", text="Cancel")
+        self.cancel_button = ttk.Button(
+            self.canvas, bootstyle="outline-danger", text="Cancel"
+        )
 
     def place(self):
         self.canvas.place(x=0, y=0)
-        self.frame.place(x=0, y=120.0, width=700.0, height=450.0)
+        self.frame.place(x=0, y=120.0, width=700.0, height=490.0)
 
         self.category_label.place(x=30.0, y=150.0, width=300.0, height=20.0)
         self.category_menubutton.place(x=30.0, y=170.0, width=300.0, height=40.0)
@@ -149,11 +167,27 @@ class AddArticleView(View):
         self.meta_title_label.place(x=30.0, y=210.0, width=300.0, height=20.0)
         self.meta_title_entry.place(x=30.0, y=230.0, width=300.0, height=40.0)
         # self.meta_title_variable.trace_add("write", lambda *args: self.validate_meta_entry(self.meta_title_entry, self.meta_title_entry.get(), MetaTitleValidator()))
-        self.meta_title_entry.bind("<KeyRelease>", lambda *args: self.validate_meta_entry(self.meta_title_entry, self.meta_title_entry.get("1.0", "end-1c"), MetaTitleValidator()))
+        self.meta_title_entry.bind(
+            "<KeyRelease>",
+            lambda *args: self.controller.validate_meta_entry(
+                self.meta_title_entry,
+                self.meta_title_entry.get("1.0", "end-1c"),
+                MetaTitleValidator(),
+                "meta_title",
+            ),
+        )
 
         self.meta_description_label.place(x=370.0, y=150.0, width=300.0, height=20.0)
-        self.meta_description_entry.place(x=370.0, y=170.0, width=300.0, height=100.0)
-        self.meta_description_entry.bind("<KeyRelease>", lambda *args: self.validate_meta_entry(self.meta_description_entry, self.meta_description_entry.get("1.0", "end-1c"), MetaDescriptionValidator()))
+        self.meta_description_entry.place(x=370.0, y=170.0, width=300.0, height=160.0)
+        self.meta_description_entry.bind(
+            "<KeyRelease>",
+            lambda *args: self.controller.validate_meta_entry(
+                self.meta_description_entry,
+                self.meta_description_entry.get("1.0", "end-1c"),
+                MetaDescriptionValidator(),
+                "meta_description",
+            ),
+        )
 
         self.status_label.place(x=30.0, y=270.0, width=300.0, height=20.0)
         self.status_menubutton.place(x=30.0, y=290.0, width=300.0, height=40.0)
@@ -168,71 +202,52 @@ class AddArticleView(View):
         self.selected_status.set("Draft")
 
         self.image_button.place(x=30.0, y=350.0, width=150.0, height=40.0)
-        self.image_button.bind("<Button-1>", lambda *args: self.choose_photo())
+        self.image_button.bind(
+            "<Button-1>", lambda *args: self.controller.choose_photo()
+        )
         self.thumbnail_toggle.place(x=30.0, y=410.0, width=150.0, height=20.0)
+        self.thumbnail_toggle.bind(
+            "<Button-1>", lambda *args: self.controller.handle_thumbnail_toggle()
+        )
         self.image_label.place(x=370.0, y=350.0, width=300.0, height=210.0)
         # self.temp_text.place(x=70.0, y=95.0, width=160.0, height=20.0)
 
         self.save_button.place(x=30.0, y=460.0, width=150.0, height=40.0)
+        self.save_button.bind("<Button-1>", lambda *args: self.controller.save())
+
         self.cancel_button.place(x=30.0, y=520.0, width=150.0, height=40.0)
+        self.cancel_button.bind("<Button-1>", lambda *args: self.controller.cancel())
 
+    def get_category(self) -> str:
+        return self.selected_category.get()
 
-    def validate_meta_entry(self, widget: tk.Widget, meta_text: str, validator: ValidationStrategy) -> None:
-        # Get the meta title from the entry widget
-        # Validate the meta title using the MetaTitleValidator
-        is_valid = validator.validate(meta_text)
-        # print(widget, meta_text, is_valid, sep=": ")
+    def get_meta_title(self) -> str:
+        return self.meta_title_entry.get("1.0", "end-1c")
 
-        # Change the style of the entry based on validation result
-        if is_valid == 1:
-            # widget.configure(bootstyle="success")
-            widget.configure(highlightcolor="#28a745")
-        elif is_valid == -1:
-            # widget.configure(bootstyle="danger")
-            widget.configure(highlightcolor="#dc3545")
-        else:
-            # widget.configure(bootstyle="primary")
-            widget.configure(highlightcolor="#007bff")
+    def get_meta_description(self) -> str:
+        return self.meta_description_entry.get("1.0", "end-1c")
 
-    def validate_image_size(self, image_path) -> None:
-        # Validate the image size using the ImageSizeValidator
-        validator = ImageSizeValidator()
-        is_valid = validator.validate(image_path)
-        # print(is_valid, sep=": ")
+    def get_status(self) -> str:
+        return self.selected_status.get()
 
+    def get_thumbnail(self):
+        return self.thumbnail_toggle.instate(["selected"])
 
-        # Change the style of the entry based on validation result
-        if is_valid == 1:
-            try:
-                image = Image.open(image_path)
-                copy = image.copy
-                image.close()
-                # image = image.resize((300, 210), Image.ANTIALIAS)
-                thumbnail = copy.thumbnail((300, 210), Image.ANTIALIAS)
-                photo = ImageTk.PhotoImage(thumbnail)
+    def set_category(self, category: str):
+        self.selected_category.set(category)
 
-                # Update the label with the new image
-                self.image_label.configure(image=photo)
-                self.image_label.image = photo  # Keep a reference to avoid garbage collection
+    def set_meta_title(self, meta_title: str):
+        self.meta_title_entry.delete("1.0", "end-1c")
+        self.meta_title_entry.insert("1.0", meta_title)
 
-            except Exception as e:
-                print("Error loading image:", e)
-        elif is_valid == -1:
-            self.image_label.configure(bootstyle="danger", text="Image is too large")
-        else:
-            self.image_label.configure(bootstyle="outline-primary")
+    def set_meta_description(self, meta_description: str):
+        self.meta_description_entry.delete("1.0", "end-1c")
+        self.meta_description_entry.insert("1.0", meta_description)
 
-    def choose_photo(self) -> None:
-        # Open file dialog
-        # filepath = tk.filedialog.askopenfilename(
-        #     initialdir="C:/",
-        #     title="Select a file",
-        #     filetypes=(("JPEG files", "*.jpg, *.jpeg"), ("PNG files", "*.png"), ("all files", "*.*")),
-        # )
-        filepath = filedialog.askopenfile(mode="r", title="Select an image", filetypes=[("JPEG files", ("*.jpg", "*.jpeg")), ("PNG files", "*.png"), ("all files", "*.*")])
+    def set_status(self, status: str):
+        self.selected_status.set(status)
 
-        # Get the path to the selected image
-        if filepath:
-            self.validate_image_size(filepath.name)
-        
-
+    def set_thumbnail(self, thumbnail):
+        self.thumbnail_toggle.state(
+            ["selected"]
+        ) if thumbnail else self.thumbnail_toggle.state(["!selected"])

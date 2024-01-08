@@ -1,12 +1,17 @@
+import textwrap
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 
+from Composite.Article import Article
+from Composite.Category import Category
+
 from MVC.Views.View import View
 
 class TreeView(View):
-    def __init__(self, root, tab):
+    def __init__(self, root, tab, controller) -> None:
         super().__init__(root, tab)
+        self.controller = controller
 
         # Tree tab
         # Title text
@@ -30,46 +35,62 @@ class TreeView(View):
             width=700,
         )
 
+        self.frame = ttk.Frame(self.canvas)
+
         # Treeview
         self.treeview = ttk.Treeview(self.canvas, bootstyle="primary")
 
-        # Scrollbar
-        # self.scrollbar = ttk.Scrollbar(self.canvas, orient="vertical")
+        # Category label
+        self.category_label = ttk.Label(
+            self.canvas, bootstyle="primary", text="Create new category"
+        )
 
+        # Category entry
+        self.category_create = ttk.Entry(
+            self.canvas, bootstyle="primary", width=50
+        ) 
+
+        # Existing category label
+        self.existing_category_label = ttk.Label(
+            self.canvas, bootstyle="primary", text="Existing categories"
+        )
+
+        # Existing category list
+        self.existing_category_listbox = tk.Listbox(
+            self.canvas, width=50
+        )
+
+        # Save button
+        self.save_button = ttk.Button(
+            self.canvas, bootstyle="outline-success", text="Save"
+        )
+
+        # Cancel button
+        self.cancel_button = ttk.Button(
+            self.canvas, bootstyle="outline-danger", text="Cancel"
+        )
 
     def place(self):
         self.canvas.place(x=0, y=0)
-
-        self.treeview.place(x=0.0, y=120.0, width=700.0, height=450.0)
-        self.treeview = self.insert_treeview(self.treeview)
-
-        # self.scrollbar.place(x=680.0, y=120.0, height=450.0)
-        # self.scrollbar.configure(command=self.treeview.yview)
-        # self.treeview.configure(yscrollcommand=self.scrollbar.set)
+        self.frame.place(x=0, y=120.0, width=700.0, height=490.0)
 
 
-    def insert_treeview(self, treeview: ttk.Treeview):
-        # Define columns
-        treeview["columns"] = ("Category", "Article", "Creation Date")
+        self.category_label.place(x=30.0, y=150.0, width=300.0, height=20.0)
+        self.category_create.place(x=30.0, y=180.0, width=300.0, height=40.0)
 
-        # Configure column properties
-        treeview.column("#0", width=50, anchor=tk.W, stretch=True)  # The first column (tree branches)
-        treeview.column("Category", width=150, anchor=tk.W, stretch=True)
-        treeview.column("Article", width=150, anchor=tk.W, stretch=True)
-        # treeview.column("Type", width=100, anchor=tk.W, stretch=True)
-        treeview.column("Creation Date", width=100, anchor=tk.W, stretch=True)
-
-        # Set column headings
-        treeview.heading("#0", text="", anchor=tk.W)
-        treeview.heading("Category", text="| Category", anchor=tk.W)
-        treeview.heading("Article", text="| Article", anchor=tk.W)
-        # treeview.heading("Type", text="| Type", anchor=tk.W)
-        treeview.heading("Creation Date", text="| Creation Date", anchor=tk.W)
-
-        # Insert data into treeview
+        self.existing_category_label.place(x=30.0, y=250.0, width=300.0, height=20.0)
+        self.existing_category_listbox.place(x=30.0, y=280.0, width=300.0, height=150.0)
+        
         for category in self.root.children:
-            category_item = treeview.insert("", tk.END, values=(f"{category.name}", "", ""))
-            for article in category.children:
-                article_item = treeview.insert(category_item, tk.END, values=("", f"{article.title}", article.creation_date))
+            self.existing_category_listbox.insert(tk.END, category.name)
 
+        self.save_button.place(x=30.0, y=460.0, width=150.0, height=40.0)
+        self.save_button.bind("<Button-1>", lambda *args: self.controller.save())
 
+        self.cancel_button.place(x=30.0, y=520.0, width=150.0, height=40.0)
+        self.cancel_button.bind("<Button-1>", lambda *args: self.controller.cancel())
+
+        self.canvas.place(x=0, y=0)
+
+        self.treeview.place(x=370.0, y=120.0, width=300.0, height=490.0)
+        self.treeview = self.controller.insert_treeview(self.treeview)

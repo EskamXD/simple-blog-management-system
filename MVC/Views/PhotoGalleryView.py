@@ -1,17 +1,20 @@
-import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from ttkbootstrap.scrolled import ScrolledFrame
 
 from MVC.Views.View import View
 
-class PhotoGalleryView(View):
-    def __init__(self, root, tab):
-        super().__init__(root, tab)
+ARTICLES_PATH = str("data")
 
+class PhotoGalleryView(View):
+    def __init__(self, root, tab, controller):
+        super().__init__(root, tab)
+        self.controller = controller
+        
         # Photo gallery tab
         # Title text
         self.canvas = ttk.Canvas(
-            self.tab,
+            self.tab,             
             autostyle=False,
             background="#23232B",
             border=0,
@@ -23,16 +26,15 @@ class PhotoGalleryView(View):
             20.0,
             40.0,
             anchor="nw",
-            text="Photo gallery",
+            text="Category tree",
             fill="#FFFFFF",
             font=("OpenSansRoman Regular", 32 * -1),
             justify="center",
             width=700,
         )
 
-        # Photo gallery
-        self.photo_gallery = ttk.Treeview(self.canvas, bootstyle="primary")
+        self.frame = ScrolledFrame(self.tab, autohide=False)
 
     def place(self):
         self.canvas.place(x=0, y=0)
-        self.photo_gallery.place(x=30.0, y=120.0, width=640.0, height=450.0)
+        self.frame.place(x=0, y=120.0, width=695.0, height=490.0)

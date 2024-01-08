@@ -2,11 +2,14 @@ from Strategy.ValidationStrategy import ValidationStrategy
 
 from PIL import Image, ImageDraw, ImageFont
 
+META_OK = ("meta_ok", "#28a745")
+META_LONG = ("meta_long", "#dc3545")
+META_DEFAULT = ("meta_default", "#007bff")
 
 class MetaDescriptionValidator(ValidationStrategy):
     def validate(self, meta_description):
         if not meta_description:
-            return 0
+            return META_DEFAULT[0]
         # if meta_description up to 158 characters and length in pixels for arial 22 is up to 920px
         title_length = len(meta_description)
 
@@ -16,6 +19,6 @@ class MetaDescriptionValidator(ValidationStrategy):
 
         if title_length_in_pixels <= 920:
             if title_length <= 158:
-                return 1
+                return META_OK[0]
 
-        return -1
+        return META_LONG[0]

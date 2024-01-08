@@ -1,33 +1,64 @@
 from Strategy.ValidationStrategy import ValidationStrategy
 
+from io import BytesIO
 from PIL import Image
 
 import os
 
+IDEAL_RATIO = 1.7772277227722772277227722772277
+IDEAL_WIDTH = 1436
+IDEAL_HEIGHT = 808
+
 
 class ImageSizeValidator(ValidationStrategy):
-    def validate(self, image_path):
+    def validate(self, image_path: str) -> int:
         if image_path == "":
             return 0
-        # if image size is up to 1200x630px
+
         image = Image.open(image_path)
         width, height = image.size
-        weight = os.path.getsize(image_path)
-        format = image.format
 
-        # count original image size ratio
+        # if image is vertical return -1
+        if height > width:
+            return -1
+
         ratio = width / height
-        # resize image by ratio to width 1200px
-        image = image.resize((1200, int(1200 / ratio)))
-        # crop image to 630px height from center
-        image = image.crop((0, (height - 630) / 2, width, (height + 630) / 2))
+        if ratio > IDEAL_RATIO:
+            image = image.resize(
+                (int(IDEAL_HEIGHT * ratio), IDEAL_HEIGHT), Image.ANTIALIAS
+            )
+        else:
+            image = image.resize(
+                (IDEAL_WIDTH, int(IDEAL_WIDTH / ratio)), Image.ANTIALIAS
+            )
 
-        if format == "JPEG" or format == "PNG" or format == "JPG":
-            # copress to webp
-            image.save(image_path, "webp", quality=80)
+        width, height = image.size
 
-        if width <= 1200 and height <= 630:
+        if not (width <= IDEAL_WIDTH and height <= IDEAL_HEIGHT):
+            image.crop((0, 0, IDEAL_WIDTH, IDEAL_HEIGHT))
+
+        return self.compress_image(image)
+
+    def compress_image(self, image: Image) -> int or BytesIO:
+        original_quality = 100
+        flag = True
+
+        while flag:
+            # Save image to temp file
+            buffer = BytesIO()
+
+            image.save(buffer, "webp", quality=original_quality)
+            
+            weight = len(buffer.getvalue())
+
             if weight <= 2 * 1024 * 1024:
-                return 1
+                buffer.seek(0)  # Przejdź na początek bufora
+                return buffer  # Zwróć obiekt BytesIO zawierający skompresowany obraz
 
-        return -1
+
+            original_quality -= 5  # Adjust how much you want to reduce the quality
+
+            if original_quality <= 0:
+                buffer.close()
+
+                return -1  # Couldn't reduce the size below 2 MB

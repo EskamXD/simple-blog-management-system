@@ -20,7 +20,7 @@ class Article(Component):
         status: "ArticleStatusContext",
         meta_description: str,
         creation_date: str,
-        parent: Component = None,
+        parent: str = None,
     ):
         self.title = title
         self.content = content

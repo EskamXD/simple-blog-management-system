@@ -25,10 +25,10 @@ class Terminal(BlogManagement):
 
     def save_and_exit(self) -> None:
         # Save state to JSON
-        for component in self.root.children:
-            component.save_composite_recursive(
-                f"{ARTICLES_PATH}/{component.name}/articles_info.json"
-            )
+        # for component in self.root.children:
+        #     component.save_composite_recursive(
+        #         f"{ARTICLES_PATH}/{component.name}/articles_info.json"
+        #     )
         self.root.save_composite_recursive("main_state.json")
 
         exit()
@@ -151,9 +151,9 @@ class Terminal(BlogManagement):
 
         # Zapisz stan do DOCX i JSON
         article_component.save(category_component)
-        category_component.save_composite_recursive(
-            f"{ARTICLES_PATH}/{category_component.name}/articles_info.json"
-        )
+        # category_component.save_composite_recursive(
+        #     f"{ARTICLES_PATH}/{category_component.name}/articles_info.json"
+        # )
         self.root.save_composite_recursive("main_state.json")
 
         print(f"Article '{title}' added to category '{category_component.name}'.")
@@ -235,9 +235,9 @@ class Terminal(BlogManagement):
                 break
 
         # Zapisz stan do DOCX i JSON
-        category_component.save_composite_recursive(
-            f"{ARTICLES_PATH}/{category_component.name}/articles_info.json"
-        )
+        # category_component.save_composite_recursive(
+        #     f"{ARTICLES_PATH}/{category_component.name}/articles_info.json"
+        # )
         self.root.save_composite_recursive("main_state.json")
 
         print(f"Article '{title}' added to category '{category_component.name}'.")

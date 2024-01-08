@@ -5,55 +5,102 @@
     "children": [
         {
             "type": "Category",
-            "name": "aaa",
+            "name": "Newsiki i ploteczki",
             "parent": "data",
             "children": [
                 {
                     "type": "Article",
-                    "title": "c",
+                    "title": "Czy Mark Zuckerberg jest cz\u0142owiekiem?",
                     "content": "c",
                     "image_path": "",
                     "status": "ready to publish",
                     "meta_description": "c",
                     "creation_date": "2024-01-01",
-                    "parent": "aaa"
+                    "parent": "Newsiki i ploteczki"
                 },
                 {
                     "type": "Article",
-                    "title": "d",
+                    "title": "Ile zarabia Elon Musk?",
                     "content": "d",
                     "image_path": "",
                     "status": "draft",
                     "meta_description": "d",
                     "creation_date": "2024-01-02",
-                    "parent": "aaa"
+                    "parent": "Newsiki i ploteczki"
+                },
+                {
+                    "type": "Article",
+                    "title": "asdasdasdasdadsadsasdadasdasdasdasdasdasdasdasdasdasdasdadasd",
+                    "content": "",
+                    "image_path": "data/Newsiki i ploteczki/images/asdasdasdasdadsadsasdadasdasdasdasdasdasdasdasdasdasdasdadasd.webp",
+                    "status": "draft",
+                    "meta_description": "asdasdasdasd",
+                    "creation_date": "07/01/2024 19:37:26",
+                    "parent": "Newsiki i ploteczki"
                 }
             ]
         },
         {
             "type": "Category",
-            "name": "aa",
+            "name": "Programowanie Python",
             "parent": "data",
             "children": [
                 {
                     "type": "Article",
-                    "title": "b",
+                    "title": "Historia powstania pythona",
                     "content": "b",
                     "image_path": "",
                     "status": "draft",
                     "meta_description": "b",
                     "creation_date": "2024-01-04",
-                    "parent": "aa"
+                    "parent": "Programowanie Python"
                 },
                 {
                     "type": "Article",
-                    "title": "f",
+                    "title": "Jak nauczy\u0107 si\u0119 programowania w 2 tygodnie?",
                     "content": "",
                     "image_path": "",
                     "status": "published",
                     "meta_description": "f",
                     "creation_date": "2024-01-01",
-                    "parent": "aa"
+                    "parent": "Programowanie Python"
+                }
+            ]
+        },
+        {
+            "type": "Category",
+            "name": "chuj",
+            "parent": "data",
+            "children": [
+                {
+                    "type": "Article",
+                    "title": "jak",
+                    "content": "",
+                    "image_path": "data/chuj/images/jak.webp",
+                    "status": "Published",
+                    "meta_description": "tak?",
+                    "creation_date": "2024-01-08",
+                    "parent": "chuj"
+                },
+                {
+                    "type": "Article",
+                    "title": "tak",
+                    "content": "",
+                    "image_path": "data/chuj/images/tak.webp",
+                    "status": "ready to publish",
+                    "meta_description": "nie wiem co tu napisa\u0107 to napisze jakie\u015b g\u0142upoty co nie ? ",
+                    "creation_date": "2024-01-08",
+                    "parent": "chuj"
+                },
+                {
+                    "type": "Article",
+                    "title": "za\u017c\u00f3\u0142\u0107 g\u0119\u015bl\u0105 ja\u017a\u0144",
+                    "content": "",
+                    "image_path": "data/chuj/images/za\u017c\u00f3\u0142\u0107 g\u0119\u015bl\u0105 ja\u017a\u0144.webp",
+                    "status": "draft",
+                    "meta_description": "za\u017c\u00f3\u0142\u0107 g\u0119\u015bl\u0105 ja\u017a\u0144",
+                    "creation_date": "2024-01-08",
+                    "parent": "chuj"
                 }
             ]
         }
