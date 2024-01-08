@@ -15,14 +15,8 @@ State/__pycache__/ReadyToPublishState.cpython-310.pyc
 Strategy/__pycache__/ArticleStatusChanger.cpython-310.pyc
 Strategy/__pycache__/ImageSizeValidator.cpython-310.pyc
 Strategy/__pycache__/MetaDescriptionValidator.cpython-310.pyc
-*.pyc
-*.pyc
-*.pyc
-*.pyc
 Strategy/__pycache__/ArticleStatusChanger.cpython-311.pyc
 Strategy/__pycache__/ImageSizeValidator.cpython-311.pyc
-*.pyc
-*.pyc
 BlogManagement/__pycache__/BlogManagement.cpython-311.pyc
 BlogManagement/__pycache__/GUI.cpython-311.pyc
 BlogManagement/__pycache__/Terminal.cpython-311.pyc
@@ -39,7 +33,6 @@ Strategy/__pycache__/MetaTitleValidator.cpython-311.pyc
 Strategy/__pycache__/ValidationStrategy.cpython-311.pyc
 *.webp
 *.docx
-*.pyc
 *.png
 *.png
 *.pyc
